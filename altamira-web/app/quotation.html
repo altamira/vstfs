@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="App" ng-controller="Controller">
+    <head>
+
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<meta name="product" content="Altamira Industria Metalurgica">
+		<meta name="description" content="Sistema de Informação Altamira">
+		<meta name="author" content="Alessandro Holanda">
+
+		<title>Altamira Industria Metalurgica</title>
+		
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+		<link rel="icon" type="image/ico" href="favicon.ico"/>
+		
+		<link rel="stylesheet" href="css/metro-bootstrap.css">
+
+        <script src="js/jquery/jquery.min.js"></script>
+        <script src="js/jquery/jquery.widget.min.js"></script>
+		<script src="js/angular.min.js"></script>
+        <!-- <script src="js/metro.min.js"></script> -->
+		
+		<link rel="stylesheet" href="quotation.css">
+		<script src="quotation.js"></script>
+		
+    </head>
+
+    <body class="metro">
+
+		<div class="tile-area tile-area-darkBlue" style="width: 1774px">
+			
+			<h1 class="tile-area-title fg-white"><a href="index.html"><i class="icon-arrow-left-3 fg-white"></i></a> <span ng-show="quotation.id==0">Nova Cotação</span><span ng-show="quotation.id>0">Cotação {{quotation.id}}</span></h1>
+	
+			<div class="tile-group seven">
+
+				<table class="table bg-transparent">
+					<thead>
+						<tr>
+							<th id="lamination">Laminação&nbsp;<a ng-click="sort_by('lamination')"><i class="icon-arrow-down-3"></i></a></th>
+							<th id="treatment">Tratamento&nbsp;<a ng-click="sort_by('treatment')"><i class="icon-menu"></i></a></th>
+							<th id="thickness">Espessura&nbsp;<a ng-click="sort_by('thickness')"><i class="icon-menu"></i></a></th>
+							<th id="weight">Peso&nbsp;<a ng-click="sort_by('weight')"><i class="icon-menu"></i></a></th>
+							<th ng-repeat="supplier in suppliers">{{supplier.name}}</th>
+							<th>TABELA (BM)</th>
+						</tr>
+					</thead>
+					<tfoot>
+	                    <td colspan="{{suppliers.count()}">
+	                        <div class="pagination">
+	                            <ul>
+	                                <li class="prev" ng-class="{disabled: currentPage == 0}">
+	                                    <a href ng-click="prevPage()"><i class="icon-previous"></i></a>
+	                                </li>
+	                                <li ng-repeat="n in range(pagedItems.length)" ng-class="{active: n == currentPage}" ng-click="setPage()">
+	                                    <a href ng-bind="n + 1">1</a>
+	                                </li>
+	                                <li class="next" ng-class="{disabled: currentPage == pagedItems.length - 1}">
+	                                    <a href ng-click="nextPage()"><i class="icon-next"></i></a>
+	                                </li>
+	                            </ul>
+	                        </div>
+	                    </td>
+	                </tfoot>
+					<tbody class=".striped">
+						<tr ng-repeat="item in quotation.items | orderBy: 'thickness'">
+							<td><h2 class="fg-white">{{item.lamination}}</h2></td>
+							<td><h2 class="fg-white">{{item.treatment}}</h2></td>
+							<td><h2 class="fg-white">{{item.thickness}}</h2></td>
+							<td><h2 class="fg-white">{{item.weight}}</h2></td>
+							<td ng-repeat="supplier in suppliers | orderBy: 'id'">
+								<div class="tile bg-blue" ng-class="{selected: bestPrice(item, quote)}" ng-repeat="quote in filteredQuotes = (item.quotes | filter:criteriaMatch(supplier) | orderBy: 'id')" ng-click="edit(quote)">
+									<div class="tile-content text-center">
+										<span class="label bg-blue fg-white">{{quote.standard}}</span>
+										<span class="subheader-secondary fg-white">{{quote.price | currency}}</span>
+									</div>
+									<div class="brand">
+										<i class="label text-left">{{quote.weight}}</i>
+										<div class="badge fg-white" ng-show="quote.stocks.length>0">{{stocksSum(quote)}}</div>
+									</div>
+									
+								</div>
+								<div class="tile fade" ng-show="filteredQuotes.length==0" ng-click="add(item, supplier)">
+									<!-- <span class="tile-content text-center" style="top:30px"><h2 class="fg-white"></h2></span>
+									<div class="brand"><span class="label fg-white"></span></div> -->
+								</div>
+							</td>
+							<td>TABELA (BM)</th>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</body>
+</html>

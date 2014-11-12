@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+
+        <meta charset="utf-8">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <title>Purchase Request</title>
+
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+        <link rel="icon" type="image/ico" href="favicon.ico"/>
+
+        <!-- Latest compiled and minified CSS -->
+        <!--<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">-->
+
+        <!-- Optional theme -->
+        <!--<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">-->
+
+        <!-- Latest compiled and minified JavaScript -->
+        <!--<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>-->
+
+        <link href="css/metro-bootstrap.css" rel="stylesheet">
+        <link href="css/metro-bootstrap-responsive.css" rel="stylesheet">
+
+        <!-- Load JavaScript Libraries -->
+        <script src="js/jquery/jquery.min.js"></script>
+        <script src="js/jquery/jquery.widget.min.js"></script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular.min.js"></script>
+
+        <!-- Metro UI CSS JavaScript plugins -->
+        <script src="js/metro/metro-loader.js"></script>
+        <script src="js/metro/metro-dropdown.js"></script>
+
+        <script src="create-request.js"></script>
+
+    </head>
+
+    <body class="metro" ng-app ng-controller="viewmodel">
+
+        <div class="container">
+
+            <div class="grid">
+
+                <div class="row">
+
+                    <div class="span12">
+                        <h1>
+                            <a href="/index.html"><i class="icon-arrow-left-3 smaller"></i></a>
+                            Requisição de Compra<small class="on-right"></small>
+                        </h1>
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="span4">
+
+                        <div class="title">Materia Prima #</div>
+
+                        <table>
+                            <tr><td colspan="2"></td></tr>
+                            <tr>
+                                <td>
+                                    <div class="input-control radio">
+                                        <label ng-repeat="(index, value) in laminations" ng-click="material.lamination = value.description">
+                                            <input type="radio" name="r1" />
+                                            <span class="check"></span>
+                                            {{value.description}}
+                                        </label>   
+                                    </div>
+                                </td>
+                                <td><input type="text" placeholder="digite a espessura do material" ng-model="material.lamination" /></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Tratamento</label>
+                                    <div class="input-control select">
+                                        <select>
+                                            <option ng-repeat="(index, value) in treatments" ng-click="material.treatment = value">{{value}}</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <!--<td><input type="text" placeholder="digite a espessura do material" ng-model="material.treatment" /></td>-->
+                            </tr>
+                            <tr><td colspan="2"></td></tr>
+                            <tr>
+                                <td>
+                                    <div class="button-dropdown" style="width:100%">
+                                        <button class="dropdown-toggle">Espessura</button>
+                                        <ul class="dropdown-menu" data-role="dropdown" >
+                                            <li ng-repeat="(index, value) in thicknesses" ng-click="material.thickness = value">{{value}}</li>
+                                        </ul>
+                                    </div>
+                                </td>
+                                <td><input type="text" placeholder="digite a espessura do material" ng-model="material.thickness" /></td>
+                            </tr>
+                            <tr><td colspan="2"></td></tr>
+                            <tr>
+                                <td>
+                                    <div class="button-dropdown">
+                                        <button class="dropdown-toggle">Largura</button>
+                                        <ul class="dropdown-menu" data-role="dropdown" >
+                                            <li ng-repeat="(index, value) in lengths"><span ng-click="material.width = value">{{value}}</span></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                                <td><input type="text" placeholder="digite a largura do material" ng-model="material.width" /></td>
+                            </tr>
+                            <tr><td colspan="2"></td></tr>
+                            <tr>
+                                <td>
+                                    <div class="button-dropdown">
+                                        <button class="dropdown-toggle">Comprimento</button>
+                                        <ul class="dropdown-menu" data-role="dropdown" >
+                                            <li ng-repeat="(index, value) in lengths" ng-click="material.length = value">{{value}}</li>
+                                        </ul>
+                                    </div>
+                                </td>
+                                <td><input type="text" placeholder="digite o comprimento do material" ng-model="material.length" /></td>
+                            </tr>
+                            <tr><td colspan="2"></td></tr>
+                            <tr>
+                                <td><label>Peso</label></td>
+                                <td>
+                                    <div class="input-control text">
+                                        <input type="text" placeholder="digite o peso" ng-model="item.weight" />
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr><td colspan="2"></td></tr>
+                            <tr>
+                                <td><label>Data para Entrega</label></td>
+                                <td>
+                                    <div class="input-control text">
+                                        <input type="text" placeholder="digite a data para entrega" ng-model="item.date" />
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <button ng-click="add(item)"><i class="icon-arrow-right" style="padding-right: 5px"></i>Incluir</button>
+                                    <button ng-click="submit()"><i class="icon-thumbs-up" style="padding-right: 5px"></i>Enviar Requisição</button>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+
+                    <div class="span8">
+
+                        <div class="title">Items da Requisição #</div>
+
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th id="lamination">Laminação</th>
+                                    <th id="treatment">Tratamento</th>
+                                    <th id="thickness">Espessura</th>
+                                    <th id="width">Largura</th>
+                                    <th id="length">Comprimento</th>
+                                    <th id="standard">Norma</th>
+                                    <th id="weight">Peso</th>
+                                    <th id="date">Entrega</th>
+                                    <th>#</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="item in request.items">
+                                    <td>{{item.material.lamination}}</td>
+                                    <td>{{item.material.treatment}}</td>
+                                    <td>{{item.material.thickness}}</td>
+                                    <td>{{item.material.width}}</td>
+                                    <td>{{item.material.length}}</td>
+                                    <td>{{item.material.standard}}</td>
+                                    <td>{{item.weight}}</td>
+                                    <td>{{item.date}}</td>
+                                    <td>
+                                        <!--<button class="button small bg-transparent" ng-click="edit(item)">
+                                            <i class="icon-pencil"></i>
+                                        </button>-->
+                                        <button class="button small bg-transparent" ng-click="remove(item)">
+                                            <i class="icon-cancel-2 small"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>		
+
+        </div>
+
+    </body>
+
+</html>

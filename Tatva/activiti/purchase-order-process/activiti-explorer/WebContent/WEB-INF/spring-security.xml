@@ -1,0 +1,23 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	http://www.springframework.org/schema/security
+	http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+	<http>
+		<intercept-url pattern="/webservice/purchaseOrder/welcome*" access="ROLE_USER" />
+		<form-login login-page="/webservice/purchaseOrder/login" default-target-url="/webservice/purchaseOrder/welcome" 
+					authentication-failure-url="/webservice/purchaseOrder/login"/>
+		<logout logout-success-url="/webservice/purchaseOrder/login" />
+	</http>
+
+	<authentication-manager>
+		<authentication-provider ref="customAuthenticationProvider" />
+	</authentication-manager>
+	
+	<beans:bean id="customAuthenticationProvider" class="com.purchaseorder.filter.CustomAuthenticationProvider" >
+		<beans:property name="identityService" ref="identityService"></beans:property>
+	</beans:bean>
+
+</beans:beans>

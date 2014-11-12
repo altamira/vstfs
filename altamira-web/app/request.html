@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<meta name="product" content="Altamira Industria Metalurgica">
+		<meta name="description" content="Sistema de Informação Altamira">
+		<meta name="author" content="Alessandro Holanda">
+
+		<title>Altamira Industria Metalurgica</title>
+		
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+		<link rel="icon" type="image/ico" href="favicon.ico"/>
+		
+		<link rel="stylesheet" href="css/metro-bootstrap.css">
+		
+        <script src="js/jquery/jquery.min.js"></script>
+        <script src="js/jquery/jquery.widget.min.js"></script>
+        <!-- <script src="js/metro.min.js"></script> -->
+
+		<script src="js/angular.min.js"></script>
+		
+		<script src="request.js"></script>
+		
+    </head>
+
+    <body class="metro" ng-app ng-controller="viewmodel">
+
+		<div class="tile-area tile-area-white" style="width: 1774px">
+			
+			<h1 class="tile-area-title fg-white"><a href="index.html"><i class="icon-arrow-left-3 fg-white"></i></a>Requisição de Compra</h1>
+
+			<div class="tile-group">
+
+				<!--<button ng-click="create()"><i class="icon-checkbox"></i>Nova Requisição</button>-->
+				<button ng-click="submit()"><i class="icon-checkbox"></i>Enviar</button>
+				<!--<button ng-click="get()"><i class="icon-checkbox"></i>Carregar</button>-->
+				
+			</div>
+			
+			<div class="tile-group two">
+				
+				<form>
+					<fieldset>
+						<legend>Materia Prima #</legend>
+						<label>Code</label>
+						<div class="input-control text">
+							<input type="text" placeholder="type material code" ng-model="item.material.code" />
+						</div>
+						<label>Weight</label>
+						<div class="input-control text">
+							<input type="text" placeholder="type weight amount" ng-model="item.weight" />
+						</div>
+						<label>Date</label>
+						<div class="input-control text">
+							<input type="text" placeholder="type arrival date" ng-model="item.date" />
+						</div>
+						<button ng-click="add(item)">Add</button>
+					</fieldset>
+				</form>
+				
+			</div>
+			
+			<div class="tile-group six">
+				
+				<legend>Items da Requisição #</legend>
+				
+				<div class="input-control text" style="width:250px">
+				    <input type="text" ng-model="query" ng-change="search()" />
+				    <button class="btn-search"></button>
+				</div>
+				
+				<table class="table bg-transparent">
+					<thead>
+						<tr>
+							<th id="code">Código&nbsp;<a ng-click="sort_by('code')"><i class="icon-arrow-down-3"></i></a></th>
+							<th id="description">Descrição&nbsp;<a ng-click="sort_by('description')"><i class="icon-menu"></i></a></th>
+							<th id="weight">Peso&nbsp;<a ng-click="sort_by('weight')"><i class="icon-menu"></i></a></th>
+							<th id="date">Entrega&nbsp;<a ng-click="sort_by('date')"><i class="icon-menu"></i></a></th>
+							<th>#</th>
+						</tr>
+					</thead>
+					<tfoot>
+	                    <td colspan="5">
+	                        <div class="pagination">
+	                            <ul>
+	                                <li class="prev" ng-class="{disabled: currentPage == 0}">
+	                                    <a href ng-click="prevPage()"><i class="icon-previous"></i></a>
+	                                </li>
+	                                <li ng-repeat="n in range(pagedItems.length)" ng-class="{active: n == currentPage}" ng-click="setPage()">
+	                                    <a href ng-bind="n + 1">1</a>
+	                                </li>
+	                                <li class="next" ng-class="{disabled: currentPage == pagedItems.length - 1}">
+	                                    <a href ng-click="nextPage()"><i class="icon-next"></i></a>
+	                                </li>
+	                            </ul>
+	                        </div>
+	                    </td>
+	                </tfoot>
+					<tbody class=".striped">
+						<tr ng-repeat="item in pagedItems[currentPage] | orderBy:sortingOrder:reverse">
+							<td>{{item.material.code}}</td>
+							<td>{{item.material.description}}</td>
+							<td>{{item.weight}}</td>
+							<td>{{item.date}}</td>
+							<td>
+								<button class="button small bg-transparent" ng-click="edit(item)">
+									<i class="icon-pencil fg-white"></i>
+								</button>
+								<button class="button small bg-transparent" ng-click="remove(item)">
+									<i class="icon-cancel-2 small fg-white"></i>
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+			</div>
+			
+		</div>
+		
+	</body>
+</html>

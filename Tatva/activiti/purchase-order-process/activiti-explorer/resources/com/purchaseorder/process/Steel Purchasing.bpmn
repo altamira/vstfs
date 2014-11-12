@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <collaboration id="Collaboration">
+    <participant id="SteelPurchasingPool" name="Steel Purchasing" processRef="SteelPurchasingProcess"></participant>
+  </collaboration>
+  <process id="SteelPurchasingProcess" name="Steel Purchasing" isExecutable="true" activiti:candidateStarterUsers="Helio.Toda">
+    <laneSet id="laneSet_SteelPurchasingProcess">
+      <lane id="ManufacturingLane" name="Manufacturing">
+        <flowNodeRef>RequestTask</flowNodeRef>
+        <flowNodeRef>StartEvent</flowNodeRef>
+        <flowNodeRef>ApprovalTask</flowNodeRef>
+      </lane>
+      <lane id="PurchaseLane" name="Purchasing">
+        <flowNodeRef>QuotationTask</flowNodeRef>
+        <flowNodeRef>GenerateOrdersServiceTask</flowNodeRef>
+        <flowNodeRef>TriggerOrdersTask</flowNodeRef>
+        <flowNodeRef>NotifyManagerTask</flowNodeRef>
+        <flowNodeRef>OrderConfirmation</flowNodeRef>
+        <flowNodeRef>UpdateContactInfoTask</flowNodeRef>
+        <flowNodeRef>OrderConfirmationTimeoutTimer</flowNodeRef>
+        <flowNodeRef>OrderConfirmationGateway</flowNodeRef>
+        <flowNodeRef>EndEvent</flowNodeRef>
+        <flowNodeRef>PurchasePlanningTask</flowNodeRef>
+        <flowNodeRef>ApprovalGateway</flowNodeRef>
+        <flowNodeRef>SendOrdersServiceTask</flowNodeRef>
+      </lane>
+    </laneSet>
+    <startEvent id="StartEvent" name="Start"></startEvent>
+    <sequenceFlow id="flow1" sourceRef="StartEvent" targetRef="RequestTask"></sequenceFlow>
+    <userTask id="RequestTask" name="Request" activiti:assignee="Helio.Toda" activiti:formKey="/forms/purchasing/steel/request.html">
+      <documentation>Create a new Steel Purchasing Request from Manufacture Leader</documentation>
+      <extensionElements>
+        <activiti:formProperty id="RequestID" name="Request Number" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow2" sourceRef="RequestTask" targetRef="QuotationTask"></sequenceFlow>
+    <userTask id="QuotationTask" name="Quotation" activiti:assignee="Esli.Gomes" activiti:formKey="/forms/purchasing/steel/quotation.html">
+      <documentation>Steel Quotation from Steel Purchasing Request</documentation>
+      <extensionElements>
+        <activiti:formProperty id="QuotationID" name="Quotation Number" type="long" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow3" sourceRef="QuotationTask" targetRef="PurchasePlanningTask"></sequenceFlow>
+    <userTask id="PurchasePlanningTask" name="Purchase Planning" activiti:assignee="Esli.Gomes" activiti:formKey="/forms/purchasing/steel/purchase_planning.html">
+      <extensionElements>
+        <activiti:formProperty id="PurchasePlanningID" name="Purchase Planning Number" required="true"></activiti:formProperty>
+        <activiti:formProperty id="Motivation" name="Motivation" type="string" variable="Reason" writable="false"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow4" sourceRef="PurchasePlanningTask" targetRef="ApprovalTask"></sequenceFlow>
+    <userTask id="ApprovalTask" name="Approval Purchase Planning" activiti:assignee="Celso.Miranda" activiti:formKey="/forms/purchasing/steel/planning_approval.html">
+      <documentation>Approval of Purchase Planning # ${PurchasePlanningID}</documentation>
+      <extensionElements>
+        <activiti:formProperty id="Approve" name="Aprove Purchase Planning ?" type="enum" required="true">
+          <activiti:value id="yes" name="Yes"></activiti:value>
+          <activiti:value id="no" name="No"></activiti:value>
+        </activiti:formProperty>
+        <activiti:formProperty id="Reason" name="Not Approval Reason:" type="string" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow5" sourceRef="ApprovalTask" targetRef="ApprovalGateway"></sequenceFlow>
+    <exclusiveGateway id="ApprovalGateway" name="Approval Gateway" default="ApprovalNoFlow"></exclusiveGateway>
+    <sequenceFlow id="ApprovalNoFlow" name="No" sourceRef="ApprovalGateway" targetRef="PurchasePlanningTask"></sequenceFlow>
+    <sequenceFlow id="ApprovalYesFlow" name="Yes" sourceRef="ApprovalGateway" targetRef="GenerateOrdersServiceTask">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${Approve == 'yes'}]]></conditionExpression>
+    </sequenceFlow>
+    <serviceTask id="GenerateOrdersServiceTask" name="Generate Orders" activiti:class="com.altamira.purchasing.steel.GenerateOrdersServiceTask"></serviceTask>
+    <sequenceFlow id="flow8" sourceRef="GenerateOrdersServiceTask" targetRef="TriggerOrdersTask"></sequenceFlow>
+    <userTask id="TriggerOrdersTask" name="Trigger Orders" activiti:assignee="Esli.Gomes" activiti:formKey="/forms/purchasing/steel/trigger_orders.html"></userTask>
+    <sequenceFlow id="flow9" sourceRef="TriggerOrdersTask" targetRef="SendOrdersServiceTask"></sequenceFlow>
+    <serviceTask id="SendOrdersServiceTask" name="Send Orders Task" activiti:class="com.altamira.purchasing.steel.SendOrdersServiceTask"></serviceTask>
+    <sequenceFlow id="flow10" sourceRef="SendOrdersServiceTask" targetRef="OrderConfirmation"></sequenceFlow>
+    <userTask id="OrderConfirmation" name="Order Confirmation" activiti:assignee="Esli.Gomes">
+      <extensionElements>
+        <activiti:formProperty id="Confirm" name="Confirm Order ?" type="enum">
+          <activiti:value id="yes" name="Yes"></activiti:value>
+          <activiti:value id="no" name="No"></activiti:value>
+        </activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow17" sourceRef="OrderConfirmation" targetRef="OrderConfirmationGateway"></sequenceFlow>
+    <exclusiveGateway id="OrderConfirmationGateway" name="Confirm ?" default="OrderConfirmNoFlow"></exclusiveGateway>
+    <sequenceFlow id="OrderConfirmYesFlow" name="Yes" sourceRef="OrderConfirmationGateway" targetRef="EndEvent">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${Confirm == 'yes'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="OrderConfirmNoFlow" name="No" sourceRef="OrderConfirmationGateway" targetRef="UpdateContactInfoTask"></sequenceFlow>
+    <userTask id="UpdateContactInfoTask" name="Update Contact Info" activiti:assignee="Esli.Gomes"></userTask>
+    <sequenceFlow id="flow16" sourceRef="UpdateContactInfoTask" targetRef="SendOrdersServiceTask"></sequenceFlow>
+    <boundaryEvent id="OrderConfirmationTimeoutTimer" name="Order Confirmation Timeout" attachedToRef="OrderConfirmation" cancelActivity="true">
+      <timerEventDefinition>
+        <timeDuration>P1D</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="flow13" sourceRef="OrderConfirmationTimeoutTimer" targetRef="NotifyManagerTask"></sequenceFlow>
+    <serviceTask id="NotifyManagerTask" name="Notify Manager Task" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:string>esli.gomes@altamira.com.br</activiti:string>
+        </activiti:field>
+        <activiti:field name="from">
+          <activiti:string>sistemas@altamira.com.br</activiti:string>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:string>Confirm Receipt Order Timeout</activiti:string>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:string>&lt;html&gt;
+&lt;header&gt;Purchase Order Confirmation</activiti:string>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow14" sourceRef="NotifyManagerTask" targetRef="EndEvent"></sequenceFlow>
+    <endEvent id="EndEvent" name="End"></endEvent>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Collaboration">
+    <bpmndi:BPMNPlane bpmnElement="Collaboration" id="BPMNPlane_Collaboration">
+      <bpmndi:BPMNShape bpmnElement="SteelPurchasingPool" id="BPMNShape_SteelPurchasingPool">
+        <omgdc:Bounds height="352.0" width="1461.0" x="0.0" y="0.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ManufacturingLane" id="BPMNShape_ManufacturingLane">
+        <omgdc:Bounds height="121.0" width="1441.0" x="20.0" y="0.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="PurchaseLane" id="BPMNShape_PurchaseLane">
+        <omgdc:Bounds height="231.0" width="1441.0" x="20.0" y="120.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="RequestTask" id="BPMNShape_RequestTask">
+        <omgdc:Bounds height="55.0" width="105.0" x="160.0" y="30.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="QuotationTask" id="BPMNShape_QuotationTask">
+        <omgdc:Bounds height="55.0" width="105.0" x="160.0" y="210.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="GenerateOrdersServiceTask" id="BPMNShape_GenerateOrdersServiceTask">
+        <omgdc:Bounds height="55.0" width="105.0" x="570.0" y="210.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="TriggerOrdersTask" id="BPMNShape_TriggerOrdersTask">
+        <omgdc:Bounds height="55.0" width="105.0" x="730.0" y="210.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="OrderConfirmation" id="BPMNShape_OrderConfirmation">
+        <omgdc:Bounds height="55.0" width="105.0" x="1050.0" y="210.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="OrderConfirmationTimeoutTimer" id="BPMNShape_OrderConfirmationTimeoutTimer">
+        <omgdc:Bounds height="30.0" width="30.0" x="1080.0" y="250.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="OrderConfirmationGateway" id="BPMNShape_OrderConfirmationGateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="1210.0" y="217.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="NotifyManagerTask" id="BPMNShape_NotifyManagerTask">
+        <omgdc:Bounds height="55.0" width="105.0" x="1178.0" y="281.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="UpdateContactInfoTask" id="BPMNShape_UpdateContactInfoTask">
+        <omgdc:Bounds height="55.0" width="105.0" x="1178.0" y="140.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="EndEvent" id="BPMNShape_EndEvent">
+        <omgdc:Bounds height="35.0" width="35.0" x="1320.0" y="220.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="StartEvent" id="BPMNShape_StartEvent">
+        <omgdc:Bounds height="35.0" width="35.0" x="70.0" y="40.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="PurchasePlanningTask" id="BPMNShape_PurchasePlanningTask">
+        <omgdc:Bounds height="55.0" width="105.0" x="320.0" y="210.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ApprovalGateway" id="BPMNShape_ApprovalGateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="480.0" y="217.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ApprovalTask" id="BPMNShape_ApprovalTask">
+        <omgdc:Bounds height="55.0" width="105.0" x="320.0" y="30.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="SendOrdersServiceTask" id="BPMNShape_SendOrdersServiceTask">
+        <omgdc:Bounds height="55.0" width="105.0" x="890.0" y="210.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="105.0" y="57.0"></omgdi:waypoint>
+        <omgdi:waypoint x="160.0" y="57.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="212.0" y="85.0"></omgdi:waypoint>
+        <omgdi:waypoint x="212.0" y="210.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="265.0" y="237.0"></omgdi:waypoint>
+        <omgdi:waypoint x="320.0" y="237.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="372.0" y="210.0"></omgdi:waypoint>
+        <omgdi:waypoint x="372.0" y="85.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="425.0" y="57.0"></omgdi:waypoint>
+        <omgdi:waypoint x="500.0" y="57.0"></omgdi:waypoint>
+        <omgdi:waypoint x="500.0" y="217.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="675.0" y="237.0"></omgdi:waypoint>
+        <omgdi:waypoint x="730.0" y="237.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="835.0" y="237.0"></omgdi:waypoint>
+        <omgdi:waypoint x="890.0" y="237.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+        <omgdi:waypoint x="995.0" y="237.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1050.0" y="237.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="OrderConfirmYesFlow" id="BPMNEdge_OrderConfirmYesFlow">
+        <omgdi:waypoint x="1250.0" y="237.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1320.0" y="237.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="20.0" x="-14.0" y="7.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
+        <omgdi:waypoint x="1110.0" y="265.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1094.0" y="277.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1094.0" y="308.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1178.0" y="308.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
+        <omgdi:waypoint x="1283.0" y="308.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1337.0" y="308.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1337.0" y="255.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="OrderConfirmNoFlow" id="BPMNEdge_OrderConfirmNoFlow">
+        <omgdi:waypoint x="1230.0" y="217.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1230.0" y="195.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="13.0" x="10.0" y="0.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
+        <omgdi:waypoint x="1178.0" y="167.0"></omgdi:waypoint>
+        <omgdi:waypoint x="942.0" y="167.0"></omgdi:waypoint>
+        <omgdi:waypoint x="942.0" y="210.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow17" id="BPMNEdge_flow17">
+        <omgdi:waypoint x="1155.0" y="237.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1210.0" y="237.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="ApprovalNoFlow" id="BPMNEdge_ApprovalNoFlow">
+        <omgdi:waypoint x="480.0" y="237.0"></omgdi:waypoint>
+        <omgdi:waypoint x="425.0" y="237.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="13.0" x="-1.0" y="4.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="ApprovalYesFlow" id="BPMNEdge_ApprovalYesFlow">
+        <omgdi:waypoint x="520.0" y="237.0"></omgdi:waypoint>
+        <omgdi:waypoint x="570.0" y="237.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="20.0" x="-15.0" y="7.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<process-application
+  xmlns="http://www.camunda.org/schema/1.0/ProcessApplication"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <process-archive name="altamira-bpm">
+    <process-engine>default</process-engine>
+    <!--<process-engine>my-engine</process-engine>-->
+    <properties>
+      <property name="isDeleteUponUndeploy">false</property>
+      <property name="isScanForProcessDefinitions">true</property>
+      <!--<property name="mailServerHost">192.168.0.6</property>
+      <property name="mailServerPort">25</property>
+      <property name="mailServerUsername">parth.patel@server1.com</property>
+      <property name="mailServerPassword">tatva123</property>
+      <property name="useTLS">true</property>
+      <property name="databaseSchema">HEAD_USER_DB</property>-->
+    </properties>
+  </process-archive>
+
+</process-application>

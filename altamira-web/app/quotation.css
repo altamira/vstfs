@@ -1,0 +1,41 @@
+.fade {
+   opacity: 0.2;
+   background-color: #585858
+}
+
+.fade:hover {
+   opacity: 0.5;
+}
+
+.metro .tile {
+  width: 120px;
+  height: 80px;
+  margin: 0 10px 10px 0;
+}
+
+.metro .tile.selected {
+  border: 4px #01DF01 solid;
+}
+
+.metro .tile.selected:after {
+  position: absolute;
+  display: block;
+  border-top: 22px solid #01DF01;
+  border-left: 22px solid transparent;
+  right: 0;
+  content: "";
+  top: 0;
+  z-index: 101;
+}
+.metro .tile.selected:before {
+  position: absolute;
+  display: block;
+  content: "\e08a";
+  color: #fff;
+  right: 0;
+  font-family: iconFont;
+  font-size: 9pt;
+  font-weight: normal;
+  z-index: 102;
+  top: -3px;
+}

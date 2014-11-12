@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<meta name="product" content="Altamira Industria Metalurgica">
+		<meta name="description" content="Sistema de Informação Altamira">
+		<meta name="author" content="Alessandro Holanda">
+
+		<title>Altamira Industria Metalurgica</title>
+		
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+		<link rel="icon" type="image/ico" href="/favicon.ico"/>
+		
+        <script src="jquery.min.js"></script>
+
+		<script src="request.js"></script>
+		
+    </head>
+
+    <body>
+
+			<fieldset>
+				<legend>Login</legend>
+				<label>Username</label>
+				<input id="request-login-username" type="text" placeholder="type username" value="kermit" />
+				<label>Password</label>
+				<input id="request-login-password" type="password" placeholder="type password" value="kermit" />
+				<button id="request-login-button">Login</button>
+			</fieldset>
+			
+		<!--<form id="request-form" action="http://">-->
+			<fieldset>
+				<legend>Request</legend>
+				<label>Date</label>
+				<input id="request-form-date" type="text" placeholder="type current date" value="31/01/2014" />
+				<label>Creator</label>
+				<input id="request-form-creator" type="text" placeholder="type creator name" value="Alessandro" />
+				<button id="request-form-button">Create a Purchase Request</button>
+			</fieldset>
+		<!--</form>-->
+		
+		<!--<form id="request-items-form">-->
+			<fieldset>
+				<legend>Request Items #</legend>
+				<label>Code</label>
+				<input id="request-items-form-code" type="text" placeholder="type material code" value="WBO201400" />
+				<label>Weight</label>
+				<input id="request-items-form-weight" type="text" placeholder="type weight amount" value="10.5" />
+				<label>Date</label>
+				<input id="request-items-form-date" type="text" placeholder="type arrival date" value="31/01/2014" />
+				<button id="request-items-form-button">Add</button>
+			</fieldset>
+		<!--</form>-->
+		
+		<table id="request-items-table">
+			<thead>
+				<tr>
+					<th>Code</th>
+					<th>Description</th>
+					<th>Weight</th>
+					<th>Arrival Date</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+		
+	</body>
+</html>

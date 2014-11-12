@@ -1,0 +1,62 @@
+<div class="container">
+
+    <div class="grid">
+
+        <div class="row">
+
+            <div class="span12">
+                <h1>
+                    <a href="#/index"><i class="icon-arrow-left-3 smaller"></i></a>
+                    Quotação<small class="on-right"></small>
+                </h1>
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="span12">
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Laminação</th>
+                            <th>Tratamento</th>
+                            <th>Espessura</th>
+                            <th>Peso</th>
+                            <th ng-repeat="supplier in suppliers">{{supplier.name}}</th>
+                            <th>TABELA (BM)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat = "item in quotation.items| orderBy: 'material.thickness'" >
+                            <td><h2>{{item.lamination}}</h2></td>
+                            <td><h2>{{item.treatment}}</h2></td>
+                            <td><h2>{{item.thickness| number:2}}</h2></td>
+                            <td style="text-align: right"><h2>{{item.weight| number:2}}</h2></td>
+                            <td ng-repeat="supplier in suppliers| orderBy: 'id'">
+                                <div class="tile bg-blue" ng-class="{selected: bestPrice(item, quote)}" ng-repeat="quote in filteredQuotes = (item.quotes| filter:criteriaMatch(supplier) | orderBy: 'id')" ng-click="edit(quote)">
+                                    <div class="tile-content text-center">
+                                        <span class="label bg-blue fg-white">{{quote.standard}}</span>
+                                        <span class="subheader-secondary fg-white">{{quote.price| currency}}</span>
+                                    </div>
+                                    <div class="brand">
+                                        <i class="label text-left">{{quote.weight}}</i>
+                                        <div class="badge fg-white" ng-show="quote.stocks.length > 0">{{stocksSum(quote)}}</div>
+                                    </div>
+
+                                </div>
+                                <div class="tile fade" ng-show="filteredQuotes.length == 0" ng-click="add(item, supplier)">
+                                    <!-- <span class="tile-content text-center" style="top:30px"><h2 class="fg-white"></h2></span>
+                                    <div class="brand"><span class="label fg-white"></span></div> -->
+                                </div>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>

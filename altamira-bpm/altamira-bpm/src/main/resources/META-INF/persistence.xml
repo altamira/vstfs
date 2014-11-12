@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+
+  <persistence-unit name="altamira-bpm-PU" transaction-type="JTA">
+    
+    <!-- <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider> -->
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    
+    <jta-data-source>jdbc/ProcessEngine</jta-data-source>
+    
+    <class>br.com.altamira.erp.entity.model.Standard</class>
+    <class>br.com.altamira.erp.entity.model.Material</class>
+    <!-- <class>br.com.altamira.erp.entity.model.MaterialStandard</class> -->
+    <class>br.com.altamira.erp.entity.model.Supplier</class>
+    <class>br.com.altamira.erp.entity.model.Quotation</class>
+    <class>br.com.altamira.erp.entity.model.QuotationItem</class>
+    <class>br.com.altamira.erp.entity.model.QuotationItemQuote</class>
+    <class>br.com.altamira.erp.entity.model.SupplierInStock</class>
+    <class>br.com.altamira.erp.entity.model.Request</class>
+    <class>br.com.altamira.erp.entity.model.RequestItem</class>
+    <class>br.com.altamira.erp.entity.model.RequestReportLog</class>
+    <class>br.com.altamira.erp.entity.model.QuotationReportLog</class>
+    <class>br.com.altamira.erp.entity.model.PlanningReportLog</class>
+    <class>br.com.altamira.erp.entity.model.PurchaseOrder</class>
+    <class>br.com.altamira.erp.entity.model.PurchaseOrderItem</class>
+    <class>br.com.altamira.erp.entity.model.PurchaseOrderReportLog</class>
+    <class>br.com.altamira.erp.entity.model.PurchasePlanning</class>
+    <class>br.com.altamira.erp.entity.model.PurchasePlanningItem</class>
+    <class>br.com.altamira.erp.entity.model.SupplierPriceList</class>
+    <class>br.com.altamira.erp.entity.model.User</class>
+    
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    
+    <properties>
+      <property name="hibernate.show_sql" value="true"/>
+      <property name="hibernate.hbm2ddl.auto" value="validate" />
+      <!-- <property name="hibernate.hbm2ddl.auto" value="update" /> -->
+      <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect" />
+      <!-- <property name="hibernate.default_schema" value="ALTAMIRA_BPM" /> -->
+    </properties>
+    
+    <!-- <properties>
+      <property name="eclipselink.ddl-generation" value="create-tables"/>
+      <property name="eclipselink.jdbc.batch-writing" value="JDBC"/>
+      <property name="eclipselink.jdbc.batch-writing.size" value="10000"/>
+      <property name="eclipselink.canonicalmodel.subpackage" value="one"/>
+      <property name="eclipselink.logging.level" value="FINE" />
+    </properties> -->
+    
+  </persistence-unit>
+
+
+</persistence>
